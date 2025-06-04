@@ -71,19 +71,25 @@ public class RestricoesController implements Initializable {
 
     @FXML
     void excluirResticao(ActionEvent event) {
-        restricaoDao.removerRestricao(restricoesObservable.get(tbv_restricoes.getSelectionModel().getSelectedIndex()));
+        Restricao restTv = (Restricao) tbv_restricoes.getSelectionModel().getSelectedItem();
+        if (restTv == null)
+            emitirAlertaSelecao();
+        else{
+            restricaoDao.removerRestricao(restricoesObservable.get(tbv_restricoes.getSelectionModel().getSelectedIndex()));
+            emitirAlertaRestricaoExcluids();
+        }
+
         preencherTabela();
     }
 
     @FXML
     void salvarRestricao(ActionEvent event) {
 
-        if(cbx_horariodaaula.getSelectionModel().isEmpty() || cbx_diadasemana.getSelectionModel().isEmpty()){
+        if (cbx_horariodaaula.getSelectionModel().isEmpty() || cbx_diadasemana.getSelectionModel().isEmpty()) {
             emitirAlertaRestricaoCamposVazios();
-        }else if(verificarRestricoes()){
+        } else if (verificarRestricoes()) {
             emitirAlertaRetricoesJaExiste();
-        }
-        else {
+        } else {
             Restricao restricao = new Restricao();
             restricao.setDiaDaSemana(cbx_diadasemana.getValue());
             restricao.setHorarioDaAula(cbx_horariodaaula.getValue());
@@ -94,32 +100,37 @@ public class RestricoesController implements Initializable {
             emitirAlertaRestricaoSalva();
         }
     }
-    boolean verificarRestricoes(){
+
+    boolean verificarRestricoes() {
         restricoes = restricaoDao.buscarRestricao(LoginController.EMAIL);
-        for (Restricao r : restricoes){
-            if(cbx_diadasemana.getValue().equals(r.getDiaDaSemana()) &&
+        for (Restricao r : restricoes) {
+            if (cbx_diadasemana.getValue().equals(r.getDiaDaSemana()) &&
                     cbx_horariodaaula.getValue().equals(r.getHorarioDaAula()))
                 return true;
         }
         return false;
     }
+
     void visualizarNomeProfessor() {
         Professor professor = new Professor();
         lbl_professor.setText(LoginController.USUARIOLOGADO);
     }
+
     void preencherTabela() {
         tbc_diadasemana.setCellValueFactory(new PropertyValueFactory<>("diaDaSemana"));
         tbc_horariodaaula.setCellValueFactory(new PropertyValueFactory<>("horarioDaAula"));
 
         restricoes = restricaoDao.buscarRestricao(LoginController.EMAIL);
-        restricoesObservable= FXCollections.observableArrayList(restricoes);
+        restricoesObservable = FXCollections.observableArrayList(restricoes);
 
         tbv_restricoes.setItems(restricoesObservable);
     }
-    void limparCampos(){
+
+    void limparCampos() {
         cbx_diadasemana.getSelectionModel().clearSelection();
         cbx_horariodaaula.getSelectionModel().clearSelection();
     }
+
     @FXML
     void voltarMenu(ActionEvent event) throws IOException {
         App.setRoot("views/telamenu.fxml");

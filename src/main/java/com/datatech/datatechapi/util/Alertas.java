@@ -74,6 +74,15 @@ public class Alertas {
                 .showInformation();
     }
 
+    public static void emitirAlertaRestricaoExcluids() {
+        Notifications.create()
+                .darkStyle()
+                .position(Pos.CENTER)
+                .text("Restrição excluida com sucesso!!!")
+                .title("Restrição")
+                .showInformation();
+    }
+
     public static void emitirAlertaUsuarioNaoExiste() {
         Notifications.create()
                 .title("Login DataTech API")
@@ -97,6 +106,14 @@ public class Alertas {
                 .position(Pos.CENTER)
                 .text("Restrição já existe no cadastro!!!")
                 .title("Restrição")
+                .showWarning();
+    }
+    public static void emitirAlertaSelecao(){
+        Notifications.create()
+                .title("Atenção")
+                .text("Selecione uma restrição para continuar!!!")
+                .darkStyle()
+                .position(Pos.CENTER)
                 .showWarning();
     }
 }
